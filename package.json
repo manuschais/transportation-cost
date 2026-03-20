@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://tarakusan-oss.github.io/transportation-cost",
+  "homepage": "https://manuschais.github.io/transportation-cost",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
