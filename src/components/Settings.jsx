@@ -1,0 +1,313 @@
+import { useState } from 'react'
+import { DEFAULT_SETTINGS, VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from '../defaults'
+
+function FormField({ label, name, value, onChange, unit, hint, min = 0, step = 1, type = 'number', fullRow = false }) {
+  return (
+    <div className={`form-field${fullRow ? ' full' : ''}`}>
+      <label className="field-label">{label}</label>
+      <div className="field-input-wrap">
+        <input
+          type={type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          min={type === 'number' ? min : undefined}
+          step={type === 'number' ? step : undefined}
+          className="field-input"
+        />
+        {unit && <span className="field-unit">{unit}</span>}
+      </div>
+      {hint && <span className="field-hint">{hint}</span>}
+    </div>
+  )
+}
+
+const SECTION_COLORS = {
+  basic: '#3b82f6',
+  fuel: '#f59e0b',
+  labor: '#10b981',
+  capital: '#8b5cf6',
+  maintenance: '#06b6d4',
+  repair: '#ef4444',
+  insurance: '#64748b',
+  cargo: '#d97706',
+}
+
+function Section({ title, color, children }) {
+  return (
+    <div className="settings-section" style={{ borderLeftColor: color }}>
+      <div className="section-header">
+        <h3 className="section-title" style={{ color }}>{title}</h3>
+      </div>
+      <div className="section-body">
+        {children}
+      </div>
+    </div>
+  )
+}
+
+export default function Settings({ settings, onSave }) {
+  const [activeVehicle, setActiveVehicle] = useState('4wheels')
+  const [localSettings, setLocalSettings] = useState(() => JSON.parse(JSON.stringify(settings)))
+  const [saved, setSaved] = useState(false)
+
+  const vehicle = localSettings.vehicles[activeVehicle]
+
+  const handleChange = (e) => {
+    const { name, value, type } = e.target
+    const parsed = type === 'number' ? (value === '' ? '' : parseFloat(value)) : value
+    setLocalSettings(prev => ({
+      ...prev,
+      vehicles: {
+        ...prev.vehicles,
+        [activeVehicle]: {
+          ...prev.vehicles[activeVehicle],
+          [name]: parsed,
+        },
+      },
+    }))
+    setSaved(false)
+  }
+
+  const handleReset = () => {
+    if (window.confirm(`รีเซ็ตค่าตั้งต้น "${VEHICLE_LABELS[activeVehicle]}" เป็นค่าเริ่มต้น?`)) {
+      setLocalSettings(prev => ({
+        ...prev,
+        vehicles: {
+          ...prev.vehicles,
+          [activeVehicle]: { ...DEFAULT_SETTINGS.vehicles[activeVehicle] },
+        },
+      }))
+      setSaved(false)
+    }
+  }
+
+  const handleSave = () => {
+    onSave(localSettings)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2500)
+  }
+
+  // Preview calculated values
+  const tripsPerMonth = parseFloat(vehicle.tripsPerMonth) || 1
+  const depPerTrip = (parseFloat(vehicle.vehicleCost) || 0) / ((parseFloat(vehicle.usefulLifeYears) || 1) * 12 * tripsPerMonth)
+  const insPerTrip = (parseFloat(vehicle.vehicleInsurancePerYear) || 0) / (12 * tripsPerMonth)
+  const taxPerTrip = (parseFloat(vehicle.taxRenewalPerYear) || 0) / (12 * tripsPerMonth)
+  const fmt = (n) => n.toLocaleString('th-TH', { maximumFractionDigits: 2 })
+
+  return (
+    <div className="settings-page">
+      <div className="page-header">
+        <h2>ตั้งค่าต้นทุนรถขนส่ง</h2>
+        <p>กำหนดต้นทุนสำหรับรถแต่ละประเภท — ค่าที่บันทึกจะใช้เป็นค่าเริ่มต้นในการคำนวน</p>
+      </div>
+
+      {/* Vehicle Type Tabs */}
+      <div className="vehicle-tabs-bar">
+        {VEHICLE_TYPES.map(type => (
+          <button
+            key={type}
+            className={`vehicle-tab-btn ${activeVehicle === type ? 'active' : ''}`}
+            onClick={() => setActiveVehicle(type)}
+          >
+            <span className="vehicle-tab-icon">{VEHICLE_ICONS[type]}</span>
+            {VEHICLE_LABELS[type]}
+          </button>
+        ))}
+      </div>
+
+      {/* Settings Grid */}
+      <div className="settings-grid">
+
+        {/* 1. Basic Info */}
+        <Section title="ข้อมูลพื้นฐาน" color={SECTION_COLORS.basic}>
+          <div className="form-row">
+            <FormField
+              label="ชื่อประเภทรถ"
+              name="name"
+              value={vehicle.name}
+              onChange={handleChange}
+              type="text"
+            />
+            <FormField
+              label="ความจุสูงสุด"
+              name="capacity"
+              value={vehicle.capacity}
+              onChange={handleChange}
+              unit="ตัน"
+              step={0.5}
+            />
+          </div>
+          <div className="form-row">
+            <FormField
+              label="น้ำหนักขั้นต่ำ (Min. Weight)"
+              name="minWeight"
+              value={vehicle.minWeight}
+              onChange={handleChange}
+              unit="ตัน"
+              step={0.5}
+              hint="ใช้คำนวนต้นทุน/ตัน เมื่อน้ำหนักจริงต่ำกว่าค่านี้"
+            />
+            <FormField
+              label="จำนวนเที่ยวต่อเดือน"
+              name="tripsPerMonth"
+              value={vehicle.tripsPerMonth}
+              onChange={handleChange}
+              unit="เที่ยว"
+              hint="สำหรับคำนวนต้นทุนคงที่เฉลี่ยต่อเที่ยว"
+            />
+          </div>
+        </Section>
+
+        {/* 2. Fuel */}
+        <Section title="ค่าน้ำมันเชื้อเพลิง" color={SECTION_COLORS.fuel}>
+          <div className="form-row">
+            <FormField
+              label="อัตราสิ้นเปลือง"
+              name="fuelConsumption"
+              value={vehicle.fuelConsumption}
+              onChange={handleChange}
+              unit="ล./100กม."
+              step={0.5}
+            />
+            <FormField
+              label="ราคาน้ำมัน"
+              name="fuelPrice"
+              value={vehicle.fuelPrice}
+              onChange={handleChange}
+              unit="บาท/ลิตร"
+              step={0.01}
+            />
+          </div>
+          <div className="field-preview">
+            <span>ต้นทุนน้ำมัน/100กม. ≈</span>
+            <strong>{fmt((vehicle.fuelConsumption || 0) * (vehicle.fuelPrice || 0))} บาท</strong>
+          </div>
+        </Section>
+
+        {/* 3. Labor */}
+        <Section title="ค่าแรงพนักงาน" color={SECTION_COLORS.labor}>
+          <FormField
+            label="ค่าแรงต่อเที่ยว (คนขับ + ผู้ช่วย)"
+            name="laborPerTrip"
+            value={vehicle.laborPerTrip}
+            onChange={handleChange}
+            unit="บาท/เที่ยว"
+          />
+        </Section>
+
+        {/* 4. Capital & Depreciation */}
+        <Section title="ต้นทุนรถและค่าเสื่อมราคา" color={SECTION_COLORS.capital}>
+          <div className="form-row">
+            <FormField
+              label="ราคารถ (รวมอุปกรณ์)"
+              name="vehicleCost"
+              value={vehicle.vehicleCost}
+              onChange={handleChange}
+              unit="บาท"
+            />
+            <FormField
+              label="อายุการใช้งาน"
+              name="usefulLifeYears"
+              value={vehicle.usefulLifeYears}
+              onChange={handleChange}
+              unit="ปี"
+            />
+          </div>
+          <div className="field-preview">
+            <span>ค่าเสื่อมราคาต่อเที่ยว ≈</span>
+            <strong>{fmt(depPerTrip)} บาท</strong>
+          </div>
+        </Section>
+
+        {/* 5. Maintenance */}
+        <Section title="ค่าบำรุงรักษา" color={SECTION_COLORS.maintenance}>
+          <FormField
+            label="ค่าบำรุงรักษาต่อกิโลเมตร"
+            name="maintenancePerKm"
+            value={vehicle.maintenancePerKm}
+            onChange={handleChange}
+            unit="บาท/กม."
+            step={0.1}
+            hint="รวม: ถ่ายน้ำมันเครื่อง, เปลี่ยนยาง, ฟิลเตอร์, หัวเทียน"
+          />
+        </Section>
+
+        {/* 6. Repair */}
+        <Section title="ค่าซ่อมบำรุง" color={SECTION_COLORS.repair}>
+          <FormField
+            label="ค่าซ่อมบำรุงต่อกิโลเมตร"
+            name="repairPerKm"
+            value={vehicle.repairPerKm}
+            onChange={handleChange}
+            unit="บาท/กม."
+            step={0.1}
+            hint="ค่าซ่อมทั่วไป, อะไหล่สำรอง, ค่าแรงช่าง"
+          />
+        </Section>
+
+        {/* 7. Insurance & Tax */}
+        <Section title="ค่าประกันรถและภาษี" color={SECTION_COLORS.insurance}>
+          <div className="form-row">
+            <FormField
+              label="ค่าประกันภัยรถยนต์"
+              name="vehicleInsurancePerYear"
+              value={vehicle.vehicleInsurancePerYear}
+              onChange={handleChange}
+              unit="บาท/ปี"
+            />
+            <FormField
+              label="ค่าต่อภาษีรถประจำปี"
+              name="taxRenewalPerYear"
+              value={vehicle.taxRenewalPerYear}
+              onChange={handleChange}
+              unit="บาท/ปี"
+            />
+          </div>
+          <div className="field-preview">
+            <span>ประกัน+ภาษี ต่อเที่ยว ≈</span>
+            <strong>{fmt(insPerTrip + taxPerTrip)} บาท</strong>
+          </div>
+        </Section>
+
+        {/* 8. Cargo Insurance */}
+        <Section title="ประกันสินค้า (ป.สค.)" color={SECTION_COLORS.cargo}>
+          <div className="form-row">
+            <FormField
+              label="มูลค่าสินค้าเริ่มต้น"
+              name="defaultCargoValue"
+              value={vehicle.defaultCargoValue ?? 0}
+              onChange={handleChange}
+              unit="บาท"
+              hint="ใช้คำนวนประกันสินค้าในหน้าคำนวน"
+            />
+            <FormField
+              label="อัตราประกันสินค้า"
+              name="cargoInsuranceRate"
+              value={vehicle.cargoInsuranceRate}
+              onChange={handleChange}
+              unit="% ของมูลค่า"
+              step={0.01}
+              hint="ใส่ 0 หากไม่ใช้ประกันสินค้า"
+            />
+          </div>
+          <div className="field-preview">
+            <span>ประกันสินค้าต่อเที่ยว ≈</span>
+            <strong>{fmt((vehicle.defaultCargoValue ?? 0) * (vehicle.cargoInsuranceRate || 0) / 100)} บาท</strong>
+          </div>
+        </Section>
+
+      </div>
+
+      {/* Save Actions */}
+      <div className="settings-actions">
+        <button className="btn-reset" onClick={handleReset}>
+          รีเซ็ตค่าเริ่มต้น ({VEHICLE_LABELS[activeVehicle]})
+        </button>
+        <button className={`btn-save ${saved ? 'saved' : ''}`} onClick={handleSave}>
+          {saved ? '✓ บันทึกแล้ว' : 'บันทึกการตั้งค่า'}
+        </button>
+      </div>
+    </div>
+  )
+}

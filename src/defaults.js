@@ -1,0 +1,91 @@
+export const VEHICLE_TYPES = ['4wheels', '6wheels', '10wheels', 'trailer']
+
+export const VEHICLE_LABELS = {
+  '4wheels': 'รถ 4 ล้อ',
+  '6wheels': 'รถ 6 ล้อ',
+  '10wheels': 'รถ 10 ล้อ',
+  'trailer': 'รถ 12 ล้อ',
+}
+
+export const VEHICLE_ICONS = {
+  '4wheels': '🚐',
+  '6wheels': '🚛',
+  '10wheels': '🚚',
+  'trailer': '🚜',
+}
+
+export const SETTINGS_VERSION = 3
+
+export const DEFAULT_SETTINGS = {
+  _version: 3,
+  vehicles: {
+    '4wheels': {
+      name: 'รถ 4 ล้อ',
+      capacity: 1.5,
+      minWeight: 1,
+      fuelConsumption: 12,
+      fuelPrice: 36,
+      laborPerTrip: 500,
+      vehicleCost: 800000,
+      usefulLifeYears: 10,
+      tripsPerMonth: 20,
+      maintenancePerKm: 0.5,
+      repairPerKm: 0.3,
+      vehicleInsurancePerYear: 15000,
+      taxRenewalPerYear: 5000,
+      defaultCargoValue: 50000,
+      cargoInsuranceRate: 0.1,
+    },
+    '6wheels': {
+      name: 'รถ 6 ล้อ',
+      capacity: 6,
+      minWeight: 6,
+      fuelConsumption: 20,
+      fuelPrice: 36,
+      laborPerTrip: 800,
+      vehicleCost: 1500000,
+      usefulLifeYears: 10,
+      tripsPerMonth: 15,
+      maintenancePerKm: 1.0,
+      repairPerKm: 0.5,
+      vehicleInsurancePerYear: 25000,
+      taxRenewalPerYear: 10000,
+      defaultCargoValue: 300000,
+      cargoInsuranceRate: 0.1,
+    },
+    '10wheels': {
+      name: 'รถ 10 ล้อ',
+      capacity: 12,
+      minWeight: 12,
+      fuelConsumption: 30,
+      fuelPrice: 36,
+      laborPerTrip: 1200,
+      vehicleCost: 2500000,
+      usefulLifeYears: 10,
+      tripsPerMonth: 12,
+      maintenancePerKm: 1.5,
+      repairPerKm: 0.8,
+      vehicleInsurancePerYear: 40000,
+      taxRenewalPerYear: 15000,
+      defaultCargoValue: 500000,
+      cargoInsuranceRate: 0.1,
+    },
+    'trailer': {
+      name: 'รถ 12 ล้อ',
+      capacity: 18,
+      minWeight: 15,
+      fuelConsumption: 40,
+      fuelPrice: 36,
+      laborPerTrip: 2000,
+      vehicleCost: 4500000,
+      usefulLifeYears: 10,
+      tripsPerMonth: 8,
+      maintenancePerKm: 3.0,
+      repairPerKm: 1.5,
+      vehicleInsurancePerYear: 80000,
+      taxRenewalPerYear: 30000,
+      defaultCargoValue: 600000,
+      cargoInsuranceRate: 0.1,
+    },
+  },
+}
