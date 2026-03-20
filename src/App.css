@@ -592,11 +592,57 @@
 
 .settings-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   gap: 10px;
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid var(--border);
+}
+
+.settings-actions-left {
+  display: flex;
+  gap: 8px;
+}
+
+.settings-actions-right {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-export {
+  padding: 8px 16px;
+  border-radius: 7px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  color: #93c5fd;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-export:hover {
+  border-color: var(--blue);
+  background: rgba(59,130,246,0.1);
+}
+
+.btn-import {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 7px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  color: #86efac;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-import:hover {
+  border-color: var(--green);
+  background: rgba(16,185,129,0.1);
 }
 
 .btn-reset {

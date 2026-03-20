@@ -88,6 +88,37 @@ export default function Settings({ settings, onSave }) {
     setTimeout(() => setSaved(false), 2500)
   }
 
+  const handleExport = () => {
+    const json = JSON.stringify(localSettings, null, 2)
+    const blob = new Blob([json], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `transport-config-${new Date().toISOString().slice(0,10)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleImport = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      try {
+        const parsed = JSON.parse(ev.target.result)
+        if (!parsed.vehicles) throw new Error('ไฟล์ไม่ถูกต้อง')
+        const merged = { ...parsed, _version: localSettings._version }
+        setLocalSettings(merged)
+        setSaved(false)
+        alert('✅ นำเข้าการตั้งค่าสำเร็จ — กด "บันทึกการตั้งค่า" เพื่อใช้งาน')
+      } catch {
+        alert('❌ ไฟล์ไม่ถูกต้อง กรุณาใช้ไฟล์ที่ export จากระบบนี้')
+      }
+    }
+    reader.readAsText(file)
+    e.target.value = ''
+  }
+
   // Preview calculated values
   const tripsPerMonth = parseFloat(vehicle.tripsPerMonth) || 1
   const depPerTrip = (parseFloat(vehicle.vehicleCost) || 0) / ((parseFloat(vehicle.usefulLifeYears) || 1) * 12 * tripsPerMonth)
@@ -301,12 +332,23 @@ export default function Settings({ settings, onSave }) {
 
       {/* Save Actions */}
       <div className="settings-actions">
-        <button className="btn-reset" onClick={handleReset}>
-          รีเซ็ตค่าเริ่มต้น ({VEHICLE_LABELS[activeVehicle]})
-        </button>
-        <button className={`btn-save ${saved ? 'saved' : ''}`} onClick={handleSave}>
-          {saved ? '✓ บันทึกแล้ว' : 'บันทึกการตั้งค่า'}
-        </button>
+        <div className="settings-actions-left">
+          <button className="btn-export" onClick={handleExport} title="ดาวน์โหลดการตั้งค่าเป็นไฟล์ JSON">
+            ⬇ ส่งออกการตั้งค่า
+          </button>
+          <label className="btn-import" title="นำเข้าการตั้งค่าจากไฟล์ JSON">
+            ⬆ นำเข้าการตั้งค่า
+            <input type="file" accept=".json" onChange={handleImport} style={{ display: 'none' }} />
+          </label>
+        </div>
+        <div className="settings-actions-right">
+          <button className="btn-reset" onClick={handleReset}>
+            รีเซ็ต ({VEHICLE_LABELS[activeVehicle]})
+          </button>
+          <button className={`btn-save ${saved ? 'saved' : ''}`} onClick={handleSave}>
+            {saved ? '✓ บันทึกแล้ว' : 'บันทึกการตั้งค่า'}
+          </button>
+        </div>
       </div>
     </div>
   )
