@@ -39,7 +39,7 @@ export default function CustomerReport({ settings }) {
 
   const filtered = customers
     .filter(c =>
-      !search || [c.customerName, c.customerCode, c.province, c.address]
+      !search || [c.customerName, c.customerCode, c.province, c.address, c.remarks]
         .some(v => v?.toLowerCase().includes(search.toLowerCase()))
     )
     .sort((a, b) => {
@@ -113,7 +113,7 @@ export default function CustomerReport({ settings }) {
       <div className="report-toolbar">
         <div className="report-search">
           <span>🔍</span>
-          <input placeholder="ค้นหา ชื่อ / รหัส / จังหวัด..." value={search} onChange={e=>setSearch(e.target.value)} />
+          <input placeholder="ค้นหา ชื่อ / รหัส / จังหวัด / หมายเหตุ..." value={search} onChange={e=>setSearch(e.target.value)} />
           {search && <button onClick={()=>setSearch('')}>✕</button>}
         </div>
         <div className="report-count">{filtered.length} / {customers.length} รายการ</div>
