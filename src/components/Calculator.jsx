@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { VEHICLE_TYPES, VEHICLE_ICONS } from '../defaults'
 import { calculateTrip } from '../calculate'
+import SaveCustomerModal from './SaveCustomerModal'
 
 const CARD_COLORS = {
   '4wheels':  '#3b82f6',
@@ -34,6 +35,8 @@ export default function Calculator({ settings }) {
   const [tollReturn, setTollReturn]     = useState(0)
   const [actualWeight, setWeight]       = useState('')
   const [useMinWeight, setUseMinWeight] = useState(true)
+  const [showSaveModal, setShowSaveModal] = useState(false)
+  const [savedCount, setSavedCount] = useState(0)
 
   const results = useMemo(() => {
     const distGo = parseFloat(distanceGo) || 0
@@ -143,6 +146,12 @@ export default function Calculator({ settings }) {
               </div>
             )}
 
+            {results && (
+              <button className="btn-save-customer" onClick={() => setShowSaveModal(true)}>
+                💾 บันทึกลูกค้า {savedCount > 0 && <span className="save-badge">{savedCount}</span>}
+              </button>
+            )}
+
           </div>
         </div>
 
@@ -226,6 +235,22 @@ export default function Calculator({ settings }) {
         </div>
 
       </div>
+
+      {showSaveModal && results && (
+        <SaveCustomerModal
+          tripData={{
+            distanceGo,
+            distanceReturn: sameReturn ? distanceGo : distanceReturn,
+            toll: (parseFloat(tollGo)||0) + (parseFloat(tollReturn)||0),
+            actualWeight,
+            useMinWeight,
+          }}
+          results={results}
+          settings={settings}
+          onClose={() => setShowSaveModal(false)}
+          onSaved={() => setSavedCount(p => p + 1)}
+        />
+      )}
     </div>
   )
 }

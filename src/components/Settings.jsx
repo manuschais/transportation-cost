@@ -191,28 +191,18 @@ export default function Settings({ settings, onSave }) {
         </Section>
 
         {/* 2. Fuel */}
-        <Section title="ค่าน้ำมันเชื้อเพลิง" color={SECTION_COLORS.fuel}>
-          <div className="form-row">
-            <FormField
-              label="อัตราสิ้นเปลือง"
-              name="fuelConsumption"
-              value={vehicle.fuelConsumption}
-              onChange={handleChange}
-              unit="ล./100กม."
-              step={0.5}
-            />
-            <FormField
-              label="ราคาน้ำมัน"
-              name="fuelPrice"
-              value={vehicle.fuelPrice}
-              onChange={handleChange}
-              unit="บาท/ลิตร"
-              step={0.01}
-            />
-          </div>
-          <div className="field-preview">
-            <span>ต้นทุนน้ำมัน/100กม. ≈</span>
-            <strong>{fmt((vehicle.fuelConsumption || 0) * (vehicle.fuelPrice || 0))} บาท</strong>
+        <Section title="ค่าน้ำมันเชื้อเพลิง (ดีเซล)" color={SECTION_COLORS.fuel}>
+          <FormField
+            label="อัตราสิ้นเปลือง"
+            name="fuelConsumption"
+            value={vehicle.fuelConsumption}
+            onChange={handleChange}
+            unit="ล./100กม."
+            step={0.5}
+          />
+          <div className="field-preview fuel-note">
+            <span>⛽ ราคาน้ำมัน ตั้งค่าที่ Header บาร์ — ใช้ร่วมกันทุกประเภทรถ</span>
+            <strong>{localSettings.fuelPrice ?? 36} บาท/ล. → {fmt((vehicle.fuelConsumption || 0) * (localSettings.fuelPrice ?? 36))} บาท/100กม.</strong>
           </div>
         </Section>
 
