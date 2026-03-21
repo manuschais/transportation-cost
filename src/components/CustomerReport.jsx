@@ -82,7 +82,7 @@ export default function CustomerReport({ settings }) {
                 <th>ชื่อลูกค้า</th>
                 <th>จังหวัด</th>
                 <th>ระยะ</th>
-                <th>น้ำหนัก</th>
+                <th>น้ำมัน</th>
                 <th>4ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (2.5ตัน)</span></th>
                 <th>6ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (7 ตัน)</span></th>
                 <th>10ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (12 ตัน)</span></th>
@@ -101,7 +101,7 @@ export default function CustomerReport({ settings }) {
                       <td className="rname">{c.customerName}</td>
                       <td>{c.province||'-'}</td>
                       <td>{(parseFloat(c.distanceGo)||0)+(parseFloat(c.distanceReturn)||0)} กม.</td>
-                      <td>{c.actualWeight||0} ตัน</td>
+                      <td>{c.fuelPrice ?? c.results?.['4wheels']?.fuelPrice ?? '-'} ฿/ล.</td>
                       {VEHICLE_TYPES.map(t => (
                         <td key={t} className="rprice">
                           <div className="rprice-inner">
