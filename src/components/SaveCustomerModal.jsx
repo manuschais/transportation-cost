@@ -39,8 +39,8 @@ export default function SaveCustomerModal({ tripData, results, settings, onClose
   const dist = (parseFloat(tripData.distanceGo)||0) + (parseFloat(tripData.distanceReturn)||0)
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-box" onClick={e => e.stopPropagation()}>
+    <div className="modal-overlay">
+      <div className="modal-box">
         <div className="modal-header">
           <span>💾 บันทึกข้อมูลลูกค้า</span>
           <button className="modal-close" onClick={onClose}>✕</button>

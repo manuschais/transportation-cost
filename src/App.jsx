@@ -109,7 +109,7 @@ function App() {
       <main className="app-main">
         {activeTab === 'calculator' && <Calculator settings={settings} />}
         {activeTab === 'settings' && <Settings settings={settings} onSave={handleSaveSettings} />}
-        {activeTab === 'report' && <CustomerReport />}
+        {activeTab === 'report' && <CustomerReport settings={settings} />}
       </main>
     </div>
   )

@@ -22,6 +22,11 @@ export function clearAllCustomers() {
   localStorage.removeItem(KEY)
 }
 
+export function updateCustomer(id, data) {
+  const list = getCustomers().map(c => c.id === id ? { ...c, ...data } : c)
+  localStorage.setItem(KEY, JSON.stringify(list))
+}
+
 // แปลงวันที่ ISO (2026-03-21) หรือ BE (21/03/2569) → CE dd/mm/yyyy
 function formatCEDate(dateStr) {
   if (!dateStr) return ''

@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
 import { getCustomers, deleteCustomer, clearAllCustomers, exportCSV, exportExcel, exportJSON, importJSON } from '../customerStorage'
 import { VEHICLE_TYPES, VEHICLE_LABELS } from '../defaults'
+import EditCustomerModal from './EditCustomerModal'
 
 function fmt(n, d=0) { return isFinite(n)&&!isNaN(n) ? n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}) : '-' }
 
-export default function CustomerReport() {
+export default function CustomerReport({ settings }) {
   const [customers, setCustomers] = useState([])
   const [search, setSearch] = useState('')
   const [expandId, setExpandId] = useState(null)
+  const [editingCustomer, setEditingCustomer] = useState(null)
 
   useEffect(() => { setCustomers(getCustomers()) }, [])
 
@@ -112,6 +114,7 @@ export default function CustomerReport() {
                         </td>
                       ))}
                       <td>
+                        <button className="rbtn-edit" onClick={e=>{e.stopPropagation();setEditingCustomer(c)}}>✏️</button>
                         <button className="rbtn-del" onClick={e=>{e.stopPropagation();handleDelete(c.id)}}>🗑</button>
                       </td>
                     </tr>
@@ -141,6 +144,14 @@ export default function CustomerReport() {
             </tbody>
           </table>
         </div>
+      )}
+      {editingCustomer && settings && (
+        <EditCustomerModal
+          customer={editingCustomer}
+          settings={settings}
+          onClose={() => setEditingCustomer(null)}
+          onSaved={() => { setCustomers(getCustomers()); setEditingCustomer(null) }}
+        />
       )}
     </div>
   )
