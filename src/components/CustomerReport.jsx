@@ -90,11 +90,13 @@ export default function CustomerReport() {
                       <td>{c.actualWeight||0} ตัน</td>
                       {VEHICLE_TYPES.map(t => (
                         <td key={t} className="rprice">
-                          <span className="rprice-trip">{fmt(c.results?.[t]?.totalCost,0)}</span>
-                          <span className="rprice-ton">
-                            {fmt(c.results?.[t]?.costPerTon,0)}
-                            <span className="rprice-wt">({c.results?.[t]?.effectiveWeight ?? '-'})</span>
-                          </span>
+                          <div className="rprice-inner">
+                            <span className="rprice-trip">{fmt(c.results?.[t]?.totalCost,0)}</span>
+                            <span className="rprice-ton">
+                              {fmt(c.results?.[t]?.costPerTon,0)}
+                              <span className="rprice-wt">({c.results?.[t]?.effectiveWeight ?? '-'})</span>
+                            </span>
+                          </div>
                         </td>
                       ))}
                       <td>
