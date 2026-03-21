@@ -69,10 +69,10 @@ export default function CustomerReport() {
                 <th>จังหวัด</th>
                 <th>ระยะ</th>
                 <th>น้ำหนัก</th>
-                <th>4ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (ตัน)</span></th>
-                <th>6ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (ตัน)</span></th>
-                <th>10ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (ตัน)</span></th>
-                <th>12ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (ตัน)</span></th>
+                <th>4ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (2.5ตัน)</span></th>
+                <th>6ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (7 ตัน)</span></th>
+                <th>10ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (12 ตัน)</span></th>
+                <th>12ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (15ตัน)</span></th>
                 <th></th>
               </tr>
             </thead>
