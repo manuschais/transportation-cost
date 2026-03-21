@@ -45,6 +45,8 @@ function formatCEDate(dateStr) {
   return dateStr
 }
 
+const r2 = v => (v != null && isFinite(v)) ? Math.round(v * 100) / 100 : ''
+
 function buildRows(list) {
   return list.map(c => ({
     'วันที่ (ค.ศ.)':        formatCEDate(c.calculationDate),
@@ -56,15 +58,15 @@ function buildRows(list) {
     'ระยะทางกลับ (กม)':     parseFloat(c.distanceReturn) || 0,
     'ค่าทางด่วน (บาท)':     parseFloat(c.toll) || 0,
     'น้ำหนัก (ตัน)':        parseFloat(c.actualWeight) || 0,
-    'ราคาน้ำมัน (บาท/ล)':  c.fuelPrice ?? c.results?.['4wheels']?.fuelPrice ?? c.results?.['6wheels']?.fuelPrice ?? '',
-    '4ล้อ /เที่ยว':         c.results?.['4wheels']?.totalCost?.toFixed(2) || '',
-    '4ล้อ /ตัน':            c.results?.['4wheels']?.costPerTon?.toFixed(2) || '',
-    '6ล้อ /เที่ยว':         c.results?.['6wheels']?.totalCost?.toFixed(2) || '',
-    '6ล้อ /ตัน':            c.results?.['6wheels']?.costPerTon?.toFixed(2) || '',
-    '10ล้อ /เที่ยว':        c.results?.['10wheels']?.totalCost?.toFixed(2) || '',
-    '10ล้อ /ตัน':           c.results?.['10wheels']?.costPerTon?.toFixed(2) || '',
-    '12ล้อ /เที่ยว':        c.results?.['trailer']?.totalCost?.toFixed(2) || '',
-    '12ล้อ /ตัน':           c.results?.['trailer']?.costPerTon?.toFixed(2) || '',
+    'ราคาน้ำมัน (บาท/ล)':  parseFloat(c.fuelPrice ?? c.results?.['4wheels']?.fuelPrice ?? c.results?.['6wheels']?.fuelPrice) || '',
+    '4ล้อ /เที่ยว':         r2(c.results?.['4wheels']?.totalCost),
+    '4ล้อ /ตัน':            r2(c.results?.['4wheels']?.costPerTon),
+    '6ล้อ /เที่ยว':         r2(c.results?.['6wheels']?.totalCost),
+    '6ล้อ /ตัน':            r2(c.results?.['6wheels']?.costPerTon),
+    '10ล้อ /เที่ยว':        r2(c.results?.['10wheels']?.totalCost),
+    '10ล้อ /ตัน':           r2(c.results?.['10wheels']?.costPerTon),
+    '12ล้อ /เที่ยว':        r2(c.results?.['trailer']?.totalCost),
+    '12ล้อ /ตัน':           r2(c.results?.['trailer']?.costPerTon),
     'หมายเหตุ':             c.remarks || '',
   }))
 }

@@ -2,22 +2,53 @@ import { useState, useEffect } from 'react'
 import { getCustomers, deleteCustomer, clearAllCustomers, updateCustomer, exportCSV, exportExcel, exportJSON, importJSON } from '../customerStorage'
 import { VEHICLE_TYPES, VEHICLE_LABELS } from '../defaults'
 import { calculateTrip } from '../calculate'
+import { printReportTable, printCustomerDetail } from '../printUtils'
 import EditCustomerModal from './EditCustomerModal'
 
 function fmt(n, d=0) { return isFinite(n)&&!isNaN(n) ? n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}) : '-' }
+
+const SORT_KEYS = {
+  date:     c => c.calculationDate || '',
+  code:     c => c.customerCode || '',
+  name:     c => c.customerName || '',
+  province: c => c.province || '',
+  distance: c => (parseFloat(c.distanceGo)||0) + (parseFloat(c.distanceReturn)||0),
+  fuel:     c => parseFloat(c.fuelPrice ?? c.results?.['4wheels']?.fuelPrice) || 0,
+  '4wheels':  c => c.results?.['4wheels']?.totalCost ?? 0,
+  '6wheels':  c => c.results?.['6wheels']?.totalCost ?? 0,
+  '10wheels': c => c.results?.['10wheels']?.totalCost ?? 0,
+  trailer:    c => c.results?.['trailer']?.totalCost ?? 0,
+}
 
 export default function CustomerReport({ settings }) {
   const [customers, setCustomers] = useState([])
   const [search, setSearch] = useState('')
   const [expandId, setExpandId] = useState(null)
   const [editingCustomer, setEditingCustomer] = useState(null)
+  const [sortKey, setSortKey] = useState('date')
+  const [sortDir, setSortDir] = useState(-1) // -1 = desc (ใหม่สุดก่อน), 1 = asc
 
   useEffect(() => { setCustomers(getCustomers()) }, [])
 
-  const filtered = customers.filter(c =>
-    !search || [c.customerName, c.customerCode, c.province, c.address]
-      .some(v => v?.toLowerCase().includes(search.toLowerCase()))
-  )
+  const handleSort = (key) => {
+    if (sortKey === key) setSortDir(d => d * -1)
+    else { setSortKey(key); setSortDir(1) }
+  }
+
+  const sortIcon = (key) => sortKey === key ? (sortDir === 1 ? ' ↑' : ' ↓') : ''
+
+  const filtered = customers
+    .filter(c =>
+      !search || [c.customerName, c.customerCode, c.province, c.address]
+        .some(v => v?.toLowerCase().includes(search.toLowerCase()))
+    )
+    .sort((a, b) => {
+      const fn = SORT_KEYS[sortKey]
+      const va = fn(a), vb = fn(b)
+      if (va < vb) return -sortDir
+      if (va > vb) return sortDir
+      return 0
+    })
 
   const handleDelete = (id) => {
     if (!confirm('ลบข้อมูลลูกค้านี้?')) return
@@ -70,6 +101,13 @@ export default function CustomerReport({ settings }) {
     e.target.value = ''
   }
 
+  const SortTh = ({ sortK, children, ...props }) => (
+    <th className={`sortable${sortKey === sortK ? ' sort-active' : ''}`}
+        onClick={() => handleSort(sortK)} {...props}>
+      {children}{sortIcon(sortK)}
+    </th>
+  )
+
   return (
     <div className="report-page">
       <div className="report-toolbar">
@@ -80,6 +118,7 @@ export default function CustomerReport({ settings }) {
         </div>
         <div className="report-count">{filtered.length} / {customers.length} รายการ</div>
         <div className="report-actions">
+          <button className="rbtn rbtn-print" onClick={() => printReportTable(filtered)} title="พิมพ์รายงาน A4">🖨 พิมพ์ A4</button>
           <button className="rbtn rbtn-excel" onClick={exportExcel} title="Export Excel (.xlsx)">📗 Export Excel</button>
           <button className="rbtn rbtn-csv" onClick={exportCSV} title="Export CSV">📊 Export CSV</button>
           <button className="rbtn rbtn-json" onClick={exportJSON} title="Backup JSON">💾 Backup</button>
@@ -109,16 +148,16 @@ export default function CustomerReport({ settings }) {
           <table className="report-table">
             <thead>
               <tr>
-                <th>วันที่</th>
-                <th>รหัส</th>
-                <th>ชื่อลูกค้า</th>
-                <th>จังหวัด</th>
-                <th>ระยะ</th>
-                <th>น้ำมัน</th>
-                <th>4ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (2.5ตัน)</span></th>
-                <th>6ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (7 ตัน)</span></th>
-                <th>10ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (12 ตัน)</span></th>
-                <th>12ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (15ตัน)</span></th>
+                <SortTh sortK="date">วันที่</SortTh>
+                <SortTh sortK="code">รหัส</SortTh>
+                <SortTh sortK="name">ชื่อลูกค้า</SortTh>
+                <SortTh sortK="province">จังหวัด</SortTh>
+                <SortTh sortK="distance">ระยะ</SortTh>
+                <SortTh sortK="fuel">น้ำมัน</SortTh>
+                <SortTh sortK="4wheels">4ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (2.5ตัน)</span></SortTh>
+                <SortTh sortK="6wheels">6ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (7 ตัน)</span></SortTh>
+                <SortTh sortK="10wheels">10ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (12 ตัน)</span></SortTh>
+                <SortTh sortK="trailer">12ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (15ตัน)</span></SortTh>
                 <th></th>
               </tr>
             </thead>
@@ -146,6 +185,7 @@ export default function CustomerReport({ settings }) {
                         </td>
                       ))}
                       <td>
+                        <button className="rbtn-print-row" onClick={e=>{e.stopPropagation();printCustomerDetail(c)}} title="พิมพ์รายละเอียด A5">🖨</button>
                         <button className="rbtn-edit" onClick={e=>{e.stopPropagation();setEditingCustomer(c)}}>✏️</button>
                         <button className="rbtn-del" onClick={e=>{e.stopPropagation();handleDelete(c.id)}}>🗑</button>
                       </td>

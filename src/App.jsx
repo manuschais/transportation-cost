@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Settings from './components/Settings'
 import Calculator from './components/Calculator'
 import CustomerReport from './components/CustomerReport'
+import HelpPage from './components/HelpPage'
 import { DEFAULT_SETTINGS, SETTINGS_VERSION } from './defaults'
 import './App.css'
 
@@ -102,6 +103,13 @@ function App() {
               <span className="nav-icon">📋</span>
               รายงานลูกค้า
             </button>
+            <button
+              className={`nav-btn ${activeTab === 'help' ? 'active' : ''}`}
+              onClick={() => setActiveTab('help')}
+            >
+              <span className="nav-icon">📖</span>
+              คู่มือ
+            </button>
           </nav>
         </div>
       </header>
@@ -110,6 +118,7 @@ function App() {
         {activeTab === 'calculator' && <Calculator settings={settings} />}
         {activeTab === 'settings' && <Settings settings={settings} onSave={handleSaveSettings} />}
         {activeTab === 'report' && <CustomerReport settings={settings} />}
+        {activeTab === 'help' && <HelpPage />}
       </main>
     </div>
   )
