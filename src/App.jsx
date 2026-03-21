@@ -21,6 +21,7 @@ function App() {
           _version: SETTINGS_VERSION,
           fuelPrice: fp,
           overheadPerMonth: parsed.overheadPerMonth ?? DEFAULT_SETTINGS.overheadPerMonth,
+          totalFleetTripsPerMonth: parsed.totalFleetTripsPerMonth ?? DEFAULT_SETTINGS.totalFleetTripsPerMonth,
           vehicles: {},
         }
         for (const key of Object.keys(DEFAULT_SETTINGS.vehicles)) {

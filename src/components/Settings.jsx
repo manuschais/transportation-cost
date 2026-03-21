@@ -141,9 +141,8 @@ export default function Settings({ settings, onSave }) {
 
       {/* Global: Overhead */}
       {(() => {
-        const totalTrips = Object.values(localSettings.vehicles)
-          .reduce((s, v) => s + (parseFloat(v.tripsPerMonth) || 0), 0)
-        const perTrip = (parseFloat(localSettings.overheadPerMonth) || 0) / (totalTrips || 1)
+        const totalTrips = parseFloat(localSettings.totalFleetTripsPerMonth) || 1
+        const perTrip = (parseFloat(localSettings.overheadPerMonth) || 0) / totalTrips
         return (
           <div className="settings-section global-section" style={{ borderLeftColor: '#0891b2' }}>
             <div className="section-header">
@@ -165,16 +164,22 @@ export default function Settings({ settings, onSave }) {
                   </div>
                 </div>
                 <div className="form-field">
-                  <label className="field-label">จำนวนเที่ยวรวมทั้งหมด</label>
+                  <label className="field-label">เที่ยวรวมทั้งกองทัพ/เดือน</label>
                   <div className="field-input-wrap">
-                    <input type="number" value={totalTrips} disabled className="field-input" />
+                    <input
+                      type="number" name="totalFleetTripsPerMonth"
+                      value={localSettings.totalFleetTripsPerMonth ?? 200}
+                      onChange={handleGlobalChange}
+                      min={1} className="field-input"
+                    />
                     <span className="field-unit">เที่ยว/เดือน</span>
                   </div>
+                  <span className="field-hint">เช่น 8 คัน × 25 วัน = 200 เที่ยว</span>
                 </div>
               </div>
               <div className="field-preview">
                 <span>Overhead ต่อเที่ยว ≈</span>
-                <strong>{fmt(perTrip)} บาท/เที่ยว (แบ่งเท่ากันทุกประเภทรถ)</strong>
+                <strong>{fmt(perTrip)} บาท/เที่ยว</strong>
               </div>
             </div>
           </div>

@@ -43,9 +43,8 @@ export default function Calculator({ settings }) {
     const distGo = parseFloat(distanceGo) || 0
     if (distGo <= 0) return null
     const distRet = sameReturn ? distanceGo : (distanceReturn || distanceGo)
-    const totalFleetTrips = Object.values(settings.vehicles)
-      .reduce((sum, v) => sum + (parseFloat(v.tripsPerMonth) || 0), 0)
-    const overheadPerTrip = (parseFloat(settings.overheadPerMonth) || 0) / (totalFleetTrips || 1)
+    const totalFleetTrips = parseFloat(settings.totalFleetTripsPerMonth) || 1
+    const overheadPerTrip = (parseFloat(settings.overheadPerMonth) || 0) / totalFleetTrips
     return VEHICLE_TYPES.reduce((acc, type) => {
       const v = settings.vehicles[type]
       acc[type] = calculateTrip(v, {
