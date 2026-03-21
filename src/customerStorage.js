@@ -18,6 +18,10 @@ export function deleteCustomer(id) {
   localStorage.setItem(KEY, JSON.stringify(getCustomers().filter(c => c.id !== id)))
 }
 
+export function clearAllCustomers() {
+  localStorage.removeItem(KEY)
+}
+
 // แปลงวันที่ ISO (2026-03-21) หรือ BE (21/03/2569) → CE dd/mm/yyyy
 function formatCEDate(dateStr) {
   if (!dateStr) return ''

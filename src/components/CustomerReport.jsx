@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getCustomers, deleteCustomer, exportCSV, exportExcel, exportJSON, importJSON } from '../customerStorage'
+import { getCustomers, deleteCustomer, clearAllCustomers, exportCSV, exportExcel, exportJSON, importJSON } from '../customerStorage'
 import { VEHICLE_TYPES, VEHICLE_LABELS } from '../defaults'
 
 function fmt(n, d=0) { return isFinite(n)&&!isNaN(n) ? n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}) : '-' }
@@ -20,6 +20,13 @@ export default function CustomerReport() {
     if (!confirm('ลบข้อมูลลูกค้านี้?')) return
     deleteCustomer(id)
     setCustomers(getCustomers())
+  }
+
+  const handleClearAll = () => {
+    if (!confirm(`ลบข้อมูลลูกค้าทั้งหมด ${customers.length} รายการ?\n\nแนะนำ Backup ก่อนลบ`)) return
+    clearAllCustomers()
+    setCustomers([])
+    setExpandId(null)
   }
 
   const handleImport = async (e) => {
@@ -49,6 +56,11 @@ export default function CustomerReport() {
             📂 Import
             <input type="file" accept=".json" onChange={handleImport} style={{display:'none'}} />
           </label>
+          {customers.length > 0 && (
+            <button className="rbtn rbtn-clear" onClick={handleClearAll} title="ลบข้อมูลทั้งหมด">
+              🗑 ลบทั้งหมด
+            </button>
+          )}
         </div>
       </div>
 
