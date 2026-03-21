@@ -47,7 +47,7 @@ function buildRows(list) {
     'ระยะทางกลับ (กม)':     parseFloat(c.distanceReturn) || 0,
     'ค่าทางด่วน (บาท)':     parseFloat(c.toll) || 0,
     'น้ำหนัก (ตัน)':        parseFloat(c.actualWeight) || 0,
-    'ราคาน้ำมัน (บาท/ล)':  c.fuelPrice || '',
+    'ราคาน้ำมัน (บาท/ล)':  c.fuelPrice ?? c.results?.['4wheels']?.fuelPrice ?? c.results?.['6wheels']?.fuelPrice ?? '',
     '4ล้อ /เที่ยว':         c.results?.['4wheels']?.totalCost?.toFixed(2) || '',
     '4ล้อ /ตัน':            c.results?.['4wheels']?.costPerTon?.toFixed(2) || '',
     '6ล้อ /เที่ยว':         c.results?.['6wheels']?.totalCost?.toFixed(2) || '',
