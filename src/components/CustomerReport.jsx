@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { getCustomers, deleteCustomer, clearAllCustomers, exportCSV, exportExcel, exportJSON, importJSON } from '../customerStorage'
+import { getCustomers, deleteCustomer, clearAllCustomers, updateCustomer, exportCSV, exportExcel, exportJSON, importJSON } from '../customerStorage'
 import { VEHICLE_TYPES, VEHICLE_LABELS } from '../defaults'
+import { calculateTrip } from '../calculate'
 import EditCustomerModal from './EditCustomerModal'
 
 function fmt(n, d=0) { return isFinite(n)&&!isNaN(n) ? n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}) : '-' }
@@ -31,6 +32,34 @@ export default function CustomerReport({ settings }) {
     setExpandId(null)
   }
 
+  const handleRecalcAll = () => {
+    if (!settings) { alert('ไม่พบข้อมูลการตั้งค่า'); return }
+    if (!confirm(`คำนวนค่าขนส่งใหม่ทั้งหมด ${customers.length} รายการ\nโดยใช้ราคาน้ำมัน ${settings.fuelPrice} บาท/ล. และต้นทุนปัจจุบัน?`)) return
+    const overheadPerTrip = (parseFloat(settings.overheadPerMonth) || 0) /
+      (parseFloat(settings.totalFleetTripsPerMonth) || 1)
+    customers.forEach(c => {
+      const newResults = Object.fromEntries(
+        VEHICLE_TYPES.map(type => {
+          const v = settings.vehicles[type]
+          const r = calculateTrip(v, {
+            distanceGo: c.distanceGo,
+            distanceReturn: c.distanceReturn || c.distanceGo,
+            tollGo: parseFloat(c.toll) || 0,
+            tollReturn: 0,
+            actualWeight: c.actualWeight,
+            useMinWeight: c.useMinWeight,
+            cargoValue: v.defaultCargoValue ?? 0,
+            overheadPerTrip,
+          })
+          return [type, { totalCost: r.totalCost, costPerTon: r.costPerTon, effectiveWeight: r.effectiveWeight }]
+        })
+      )
+      updateCustomer(c.id, { fuelPrice: settings.fuelPrice, results: newResults })
+    })
+    setCustomers(getCustomers())
+    alert(`อัปเดตแล้ว ${customers.length} รายการ`)
+  }
+
   const handleImport = async (e) => {
     const file = e.target.files[0]; if (!file) return
     try {
@@ -58,11 +87,14 @@ export default function CustomerReport({ settings }) {
             📂 Import
             <input type="file" accept=".json" onChange={handleImport} style={{display:'none'}} />
           </label>
-          {customers.length > 0 && (
+          {customers.length > 0 && (<>
+            <button className="rbtn rbtn-recalc" onClick={handleRecalcAll} title="คำนวนค่าขนส่งใหม่ทั้งหมดด้วยต้นทุนปัจจุบัน">
+              🔄 คำนวนใหม่ทั้งหมด
+            </button>
             <button className="rbtn rbtn-clear" onClick={handleClearAll} title="ลบข้อมูลทั้งหมด">
               🗑 ลบทั้งหมด
             </button>
-          )}
+          </>)}
         </div>
       </div>
 

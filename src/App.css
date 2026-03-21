@@ -910,6 +910,8 @@
 .rbtn-json { border-color: #1e3a5f; color: #3b82f6; }
 .rbtn-json:hover { background: #1e3a5f; color: #fff; }
 .rbtn-import { border-color: var(--border); cursor: pointer; }
+.rbtn-recalc { border-color: #1e4d7f; color: #60a5fa; }
+.rbtn-recalc:hover { background: #1e4d7f; color: #fff; }
 .rbtn-clear { border-color: #7f1d1d; color: #f87171; }
 .rbtn-clear:hover { background: #7f1d1d; color: #fff; }
 
