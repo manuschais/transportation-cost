@@ -53,6 +53,12 @@ export default function Settings({ settings, onSave }) {
 
   const vehicle = localSettings.vehicles[activeVehicle]
 
+  const handleGlobalChange = (e) => {
+    const val = e.target.value === '' ? '' : parseFloat(e.target.value)
+    setLocalSettings(prev => ({ ...prev, [e.target.name]: val }))
+    setSaved(false)
+  }
+
   const handleChange = (e) => {
     const { name, value, type } = e.target
     const parsed = type === 'number' ? (value === '' ? '' : parseFloat(value)) : value
@@ -132,6 +138,48 @@ export default function Settings({ settings, onSave }) {
         <h2>ตั้งค่าต้นทุนรถขนส่ง</h2>
         <p>กำหนดต้นทุนสำหรับรถแต่ละประเภท — ค่าที่บันทึกจะใช้เป็นค่าเริ่มต้นในการคำนวน</p>
       </div>
+
+      {/* Global: Overhead */}
+      {(() => {
+        const totalTrips = Object.values(localSettings.vehicles)
+          .reduce((s, v) => s + (parseFloat(v.tripsPerMonth) || 0), 0)
+        const perTrip = (parseFloat(localSettings.overheadPerMonth) || 0) / (totalTrips || 1)
+        return (
+          <div className="settings-section global-section" style={{ borderLeftColor: '#0891b2' }}>
+            <div className="section-header">
+              <h3 className="section-title" style={{ color: '#0891b2' }}>ค่า Overhead (ส่วนกลาง)</h3>
+              <span className="section-hint">เงินเดือนแอดมิน · ค่าเช่าออฟฟิศ · ค่าโทรศัพท์ · ค่าน้ำไฟ · ฯลฯ</span>
+            </div>
+            <div className="section-body">
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="field-label">Overhead รวม/เดือน</label>
+                  <div className="field-input-wrap">
+                    <input
+                      type="number" name="overheadPerMonth"
+                      value={localSettings.overheadPerMonth ?? 30000}
+                      onChange={handleGlobalChange}
+                      min={0} className="field-input"
+                    />
+                    <span className="field-unit">บาท/เดือน</span>
+                  </div>
+                </div>
+                <div className="form-field">
+                  <label className="field-label">จำนวนเที่ยวรวมทั้งหมด</label>
+                  <div className="field-input-wrap">
+                    <input type="number" value={totalTrips} disabled className="field-input" />
+                    <span className="field-unit">เที่ยว/เดือน</span>
+                  </div>
+                </div>
+              </div>
+              <div className="field-preview">
+                <span>Overhead ต่อเที่ยว ≈</span>
+                <strong>{fmt(perTrip)} บาท/เที่ยว (แบ่งเท่ากันทุกประเภทรถ)</strong>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Vehicle Type Tabs */}
       <div className="vehicle-tabs-bar">

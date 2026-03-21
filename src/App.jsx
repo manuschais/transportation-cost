@@ -17,7 +17,12 @@ function App() {
           return DEFAULT_SETTINGS
         }
         const fp = parsed.fuelPrice ?? DEFAULT_SETTINGS.fuelPrice
-        const merged = { _version: SETTINGS_VERSION, fuelPrice: fp, vehicles: {} }
+        const merged = {
+          _version: SETTINGS_VERSION,
+          fuelPrice: fp,
+          overheadPerMonth: parsed.overheadPerMonth ?? DEFAULT_SETTINGS.overheadPerMonth,
+          vehicles: {},
+        }
         for (const key of Object.keys(DEFAULT_SETTINGS.vehicles)) {
           merged.vehicles[key] = {
             ...DEFAULT_SETTINGS.vehicles[key],

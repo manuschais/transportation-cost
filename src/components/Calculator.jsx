@@ -20,6 +20,7 @@ const BREAKDOWN_ITEMS = [
   { key: 'insurancePerTrip',    label: 'ป.รถ',      color: '#64748b' },
   { key: 'taxPerTrip',          label: 'ภาษี',      color: '#94a3b8' },
   { key: 'cargoInsuranceCost',  label: 'ป.สค.',     color: '#d97706' },
+  { key: 'overhead',            label: 'Overhead',  color: '#0891b2' },
 ]
 
 function fmt(num, d = 0) {
@@ -42,6 +43,9 @@ export default function Calculator({ settings }) {
     const distGo = parseFloat(distanceGo) || 0
     if (distGo <= 0) return null
     const distRet = sameReturn ? distanceGo : (distanceReturn || distanceGo)
+    const totalFleetTrips = Object.values(settings.vehicles)
+      .reduce((sum, v) => sum + (parseFloat(v.tripsPerMonth) || 0), 0)
+    const overheadPerTrip = (parseFloat(settings.overheadPerMonth) || 0) / (totalFleetTrips || 1)
     return VEHICLE_TYPES.reduce((acc, type) => {
       const v = settings.vehicles[type]
       acc[type] = calculateTrip(v, {
@@ -52,6 +56,7 @@ export default function Calculator({ settings }) {
         actualWeight,
         useMinWeight,
         cargoValue: v.defaultCargoValue ?? 0,
+        overheadPerTrip,
       })
       return acc
     }, {})

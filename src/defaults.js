@@ -19,6 +19,7 @@ export const SETTINGS_VERSION = 3
 export const DEFAULT_SETTINGS = {
   _version: 3,
   fuelPrice: 36,
+  overheadPerMonth: 30000,
   vehicles: {
     '4wheels': {
       name: 'รถ 4 ล้อ',

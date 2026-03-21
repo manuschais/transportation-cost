@@ -543,6 +543,17 @@
   letter-spacing: 0.5px;
 }
 
+.section-hint {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+  display: block;
+}
+
+.global-section {
+  margin-bottom: 4px;
+}
+
 .section-body {
   padding: 14px 16px;
   display: flex;

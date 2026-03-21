@@ -4,7 +4,7 @@
  * @param {object} trip - ข้อมูลเที่ยววิ่ง
  */
 export function calculateTrip(vehicle, trip) {
-  const { distanceGo, distanceReturn, tollGo, tollReturn, actualWeight, cargoValue, useMinWeight } = trip
+  const { distanceGo, distanceReturn, tollGo, tollReturn, actualWeight, cargoValue, useMinWeight, overheadPerTrip = 0 } = trip
 
   const distGo = parseFloat(distanceGo) || 0
   const distReturn = parseFloat(distanceReturn) || distGo
@@ -43,6 +43,9 @@ export function calculateTrip(vehicle, trip) {
   const cargoInsuranceCost =
     (parseFloat(cargoValue) || 0) * ((parseFloat(vehicle.cargoInsuranceRate) || 0) / 100)
 
+  // Overhead (ค่าใช้จ่ายส่วนกลาง: ออฟฟิศ, แอดมิน ฯลฯ แบ่งต่อเที่ยว)
+  const overhead = parseFloat(overheadPerTrip) || 0
+
   const totalCost =
     fuelCost +
     laborCost +
@@ -52,7 +55,8 @@ export function calculateTrip(vehicle, trip) {
     repairCost +
     insurancePerTrip +
     taxPerTrip +
-    cargoInsuranceCost
+    cargoInsuranceCost +
+    overhead
 
   // น้ำหนักที่ใช้คำนวน
   const weight = parseFloat(actualWeight) || 0
@@ -72,6 +76,7 @@ export function calculateTrip(vehicle, trip) {
       insurancePerTrip,
       taxPerTrip,
       cargoInsuranceCost,
+      overhead,
     },
     totalCost,
     effectiveWeight,
