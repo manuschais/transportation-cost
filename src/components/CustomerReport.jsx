@@ -69,10 +69,10 @@ export default function CustomerReport() {
                 <th>จังหวัด</th>
                 <th>ระยะ</th>
                 <th>น้ำหนัก</th>
-                <th>4ล้อ/เที่ยว</th>
-                <th>6ล้อ/เที่ยว</th>
-                <th>10ล้อ/เที่ยว</th>
-                <th>12ล้อ/เที่ยว</th>
+                <th>4ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (ตัน)</span></th>
+                <th>6ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (ตัน)</span></th>
+                <th>10ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (ตัน)</span></th>
+                <th>12ล้อ /เที่ยว<br/><span className="th-sub">/ตัน (ตัน)</span></th>
                 <th></th>
               </tr>
             </thead>
@@ -90,8 +90,11 @@ export default function CustomerReport() {
                       <td>{c.actualWeight||0} ตัน</td>
                       {VEHICLE_TYPES.map(t => (
                         <td key={t} className="rprice">
-                          {fmt(c.results?.[t]?.totalCost,0)}
-                          <span className="rprice-sub">/{fmt(c.results?.[t]?.costPerTon,0)}</span>
+                          <span className="rprice-trip">{fmt(c.results?.[t]?.totalCost,0)}</span>
+                          <span className="rprice-ton">
+                            {fmt(c.results?.[t]?.costPerTon,0)}
+                            <span className="rprice-wt">({c.results?.[t]?.effectiveWeight ?? '-'})</span>
+                          </span>
                         </td>
                       ))}
                       <td>
