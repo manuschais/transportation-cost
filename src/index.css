@@ -9,6 +9,14 @@ html, body, #root {
   overflow: hidden;
 }
 
+@media (max-width: 768px) {
+  html, body, #root {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+}
+
 body {
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Noto Sans Thai', sans-serif;
   background: #0a0f1e;
