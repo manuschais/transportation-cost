@@ -1093,9 +1093,17 @@
 /* ========== MOBILE RESPONSIVE ========== */
 @media (max-width: 768px) {
 
-  /* --- App: allow vertical scroll --- */
-  .app { height: auto; min-height: 100dvh; overflow-y: auto; }
-  .app-main { flex: none; overflow: visible; }
+  /* --- ปลด overflow:hidden ทุกชั้น ให้ scroll ได้ --- */
+  .app                  { height: auto !important; min-height: 100dvh; overflow: visible !important; }
+  .app-main             { flex: none !important; overflow: visible !important; height: auto !important; }
+  .calculator-page      { overflow: visible !important; height: auto !important; flex: none !important; padding: 8px; }
+  .calc-layout          { overflow: visible !important; height: auto !important; grid-template-columns: 1fr; }
+  .calc-panel           { overflow: visible !important; height: auto !important; }
+  .calc-panel-body      { overflow: visible !important; height: auto !important; }
+  .calc-results-area    { overflow: visible !important; height: auto !important; flex: none !important; }
+  .vehicle-results-grid { overflow: visible !important; height: auto !important; grid-template-columns: 1fr 1fr; grid-template-rows: auto; flex: none !important; }
+  .settings-page        { overflow: visible !important; height: auto !important; }
+  .report-page          { overflow: visible !important; height: auto !important; }
 
   /* --- Header: 2 rows --- */
   .header-content { flex-wrap: wrap; padding: 8px 12px; gap: 6px; }
@@ -1115,20 +1123,7 @@
   .nav-btn { flex: 1; justify-content: center; padding: 5px 4px; font-size: 12px; gap: 3px; }
   .nav-icon { font-size: 15px; }
 
-  /* --- Calculator: single column, scrollable --- */
-  .calculator-page { padding: 8px; overflow: visible; }
-  .calc-layout { grid-template-columns: 1fr; overflow: visible; height: auto; }
-  .calc-panel { overflow: visible; }
-  .calc-panel-body { overflow: visible; }
-  .calc-results-area { overflow: visible; }
-
-  /* --- Vehicle cards: 2 columns --- */
-  .vehicle-results-grid {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-    height: auto;
-    overflow: visible;
-  }
+  /* --- Vehicle cards --- */
   .vehicle-result-card { padding: 8px 10px; }
   .vrc-name { font-size: 13px; }
   .vrc-cap { font-size: 10px; }
@@ -1138,23 +1133,19 @@
   .vrc-breakdown { display: none; }
   .vrc-footer { font-size: 10px; }
 
-  /* --- Report: horizontal scroll for wide table --- */
-  .report-table-wrap { overflow-x: auto; }
+  /* --- Report table: scroll ซ้าย-ขวา --- */
+  .report-table-wrap { overflow-x: auto !important; }
   .report-table { min-width: 780px; }
   .report-toolbar { flex-wrap: wrap; gap: 6px; }
   .report-actions { flex-wrap: wrap; gap: 4px; }
-
-  /* --- Settings scrollable --- */
-  .settings-page { overflow-y: auto; }
 }
 
 @media (max-width: 480px) {
-  /* Very small: nav icon only */
+  /* จอเล็กมาก: nav เหลือแค่ icon */
   .nav-text { display: none; }
   .nav-btn { padding: 6px; }
   .nav-icon { font-size: 18px; }
 
-  /* Cards: single column */
-  .vehicle-results-grid { grid-template-columns: 1fr; }
-  .vrc-numbers { gap: 12px; }
+  /* การ์ดรถ: เรียงเดี่ยว */
+  .vehicle-results-grid { grid-template-columns: 1fr !important; }
 }
