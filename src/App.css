@@ -1089,3 +1089,72 @@
 .help-table th { text-align: left; padding: 6px 10px; background: var(--bg-subtle); color: var(--text-3); font-weight: 600; border-bottom: 1px solid var(--border); }
 .help-table td { padding: 6px 10px; color: var(--text-2); border-bottom: 1px solid var(--border); }
 .help-table tr:last-child td { border-bottom: none; }
+
+/* ========== MOBILE RESPONSIVE ========== */
+@media (max-width: 768px) {
+
+  /* --- App: allow vertical scroll --- */
+  .app { height: auto; min-height: 100dvh; overflow-y: auto; }
+  .app-main { flex: none; overflow: visible; }
+
+  /* --- Header: 2 rows --- */
+  .header-content { flex-wrap: wrap; padding: 8px 12px; gap: 6px; }
+  .header-brand { flex: 1; min-width: 0; }
+  .brand-text span { display: none; }
+  .brand-icon { font-size: 20px; }
+  .brand-text h1 { font-size: 14px; }
+  .header-fuel { padding: 4px 8px; }
+  .fuel-input { width: 56px; font-size: 13px; }
+  .header-nav {
+    width: 100%;
+    justify-content: stretch;
+    gap: 4px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 6px;
+  }
+  .nav-btn { flex: 1; justify-content: center; padding: 5px 4px; font-size: 12px; gap: 3px; }
+  .nav-icon { font-size: 15px; }
+
+  /* --- Calculator: single column, scrollable --- */
+  .calculator-page { padding: 8px; overflow: visible; }
+  .calc-layout { grid-template-columns: 1fr; overflow: visible; height: auto; }
+  .calc-panel { overflow: visible; }
+  .calc-panel-body { overflow: visible; }
+  .calc-results-area { overflow: visible; }
+
+  /* --- Vehicle cards: 2 columns --- */
+  .vehicle-results-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    height: auto;
+    overflow: visible;
+  }
+  .vehicle-result-card { padding: 8px 10px; }
+  .vrc-name { font-size: 13px; }
+  .vrc-cap { font-size: 10px; }
+  .vrc-num-val { font-size: 20px; }
+  .vrc-num-label { font-size: 10px; }
+  .vrc-num-unit { font-size: 10px; }
+  .vrc-breakdown { display: none; }
+  .vrc-footer { font-size: 10px; }
+
+  /* --- Report: horizontal scroll for wide table --- */
+  .report-table-wrap { overflow-x: auto; }
+  .report-table { min-width: 780px; }
+  .report-toolbar { flex-wrap: wrap; gap: 6px; }
+  .report-actions { flex-wrap: wrap; gap: 4px; }
+
+  /* --- Settings scrollable --- */
+  .settings-page { overflow-y: auto; }
+}
+
+@media (max-width: 480px) {
+  /* Very small: nav icon only */
+  .nav-text { display: none; }
+  .nav-btn { padding: 6px; }
+  .nav-icon { font-size: 18px; }
+
+  /* Cards: single column */
+  .vehicle-results-grid { grid-template-columns: 1fr; }
+  .vrc-numbers { gap: 12px; }
+}

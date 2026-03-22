@@ -87,28 +87,28 @@ function App() {
               onClick={() => setActiveTab('calculator')}
             >
               <span className="nav-icon">🧮</span>
-              คำนวนค่าขนส่ง
+              <span className="nav-text">คำนวนค่าขนส่ง</span>
             </button>
             <button
               className={`nav-btn ${activeTab === 'settings' ? 'active' : ''}`}
               onClick={() => setActiveTab('settings')}
             >
               <span className="nav-icon">⚙️</span>
-              ตั้งค่าต้นทุน
+              <span className="nav-text">ตั้งค่าต้นทุน</span>
             </button>
             <button
               className={`nav-btn ${activeTab === 'report' ? 'active' : ''}`}
               onClick={() => setActiveTab('report')}
             >
               <span className="nav-icon">📋</span>
-              รายงานลูกค้า
+              <span className="nav-text">รายงานลูกค้า</span>
             </button>
             <button
               className={`nav-btn ${activeTab === 'help' ? 'active' : ''}`}
               onClick={() => setActiveTab('help')}
             >
               <span className="nav-icon">📖</span>
-              คู่มือ
+              <span className="nav-text">คู่มือ</span>
             </button>
           </nav>
         </div>
