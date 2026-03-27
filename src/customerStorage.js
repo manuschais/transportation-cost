@@ -60,13 +60,13 @@ function buildRows(list) {
     'น้ำหนัก (ตัน)':        parseFloat(c.actualWeight) || 0,
     'ราคาน้ำมัน (บาท/ล)':  parseFloat(c.fuelPrice ?? c.results?.['4wheels']?.fuelPrice ?? c.results?.['6wheels']?.fuelPrice) || '',
     '4ล้อ /เที่ยว':         r2(c.results?.['4wheels']?.totalCost),
-    '4ล้อ /ตัน':            r2(c.results?.['4wheels']?.costPerTon),
+    '4ล้อ /ตัน (2.5 T)':            r2(c.results?.['4wheels']?.costPerTon),
     '6ล้อ /เที่ยว':         r2(c.results?.['6wheels']?.totalCost),
-    '6ล้อ /ตัน':            r2(c.results?.['6wheels']?.costPerTon),
+    '6ล้อ /ตัน (7 T)':            r2(c.results?.['6wheels']?.costPerTon),
     '10ล้อ /เที่ยว':        r2(c.results?.['10wheels']?.totalCost),
-    '10ล้อ /ตัน':           r2(c.results?.['10wheels']?.costPerTon),
+    '10ล้อ /ตัน (12 T)':           r2(c.results?.['10wheels']?.costPerTon),
     '12ล้อ /เที่ยว':        r2(c.results?.['trailer']?.totalCost),
-    '12ล้อ /ตัน':           r2(c.results?.['trailer']?.costPerTon),
+    '12ล้อ /ตัน (15 T)':           r2(c.results?.['trailer']?.costPerTon),
     'หมายเหตุ':             c.remarks || '',
   }))
 }
