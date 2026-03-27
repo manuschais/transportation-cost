@@ -1,4 +1,4 @@
-const VEHICLE_LABELS = { '4wheels':'รถ 4 ล้อ', '6wheels':'รถ 6 ล้อ', '10wheels':'รถ 10 ล้อ', trailer:'รถ 12 ล้อ' }
+const VEHICLE_LABELS = { '4wheels':'รถ 4 ล้อ 2.5 ตัน', '6wheels':'รถ 6 ล้อ 7 ตัน', '10wheels':'รถ 10 ล้อ 12 ตัน', trailer:'รถ 12 ล้อ 15 ตัน' }
 const VEHICLE_TYPES  = ['4wheels','6wheels','10wheels','trailer']
 
 function fmtN(n, d=0) {
