@@ -58,10 +58,10 @@ export function printReportTable(customers) {
           <th rowspan="2">จังหวัด</th>
           <th rowspan="2">ระยะ<br/>(กม.)</th>
           <th rowspan="2">น้ำมัน<br/>(฿/ล.)</th>
-          <th colspan="2">รถ 4 ล้อ</th>
-          <th colspan="2">รถ 6 ล้อ</th>
-          <th colspan="2">รถ 10 ล้อ</th>
-          <th colspan="2">รถ 12 ล้อ</th>
+          <th colspan="2">รถ 4 ล้อ 2.5 ตัน</th>
+          <th colspan="2">รถ 6 ล้อ 7 ตัน</th>
+          <th colspan="2">รถ 10 ล้อ 12 ตัน</th>
+          <th colspan="2">รถ 12 ล้อ 15 ตัน</th>
         </tr>
         <tr>
           <th>/เที่ยว</th><th>/ตัน</th>
