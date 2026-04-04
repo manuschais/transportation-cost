@@ -7,26 +7,17 @@ function fmtN(n, d=0) {
 }
 
 function printWindow(html, css) {
-  const iframe = document.createElement('iframe')
-  iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:0;height:0;border:none;'
-  document.body.appendChild(iframe)
-
-  const doc = iframe.contentDocument || iframe.contentWindow.document
-  doc.open()
-  doc.write(`<!DOCTYPE html><html><head><meta charset="utf-8">
+  const w = window.open('', '_blank')
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8">
     <style>
       * { box-sizing: border-box; margin: 0; padding: 0; }
       body { font-family: 'Sarabun', 'Tahoma', sans-serif; font-size: 11pt; color: #111; background: #fff; }
       ${css}
     </style>
   </head><body>${html}</body></html>`)
-  doc.close()
-
-  setTimeout(() => {
-    iframe.contentWindow.focus()
-    iframe.contentWindow.print()
-    setTimeout(() => document.body.removeChild(iframe), 1000)
-  }, 400)
+  w.document.close()
+  w.focus()
+  setTimeout(() => { w.print(); w.close() }, 400)
 }
 
 // ─── A4 Landscape: ตารางรายงาน ────────────────────────────────────────────
