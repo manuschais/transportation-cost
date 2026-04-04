@@ -8,6 +8,7 @@ import './App.css'
 
 function App() {
   const [activeTab, setActiveTab] = useState('calculator')
+  const [fuelInput, setFuelInput] = useState(null) // local string for fuel input
   const [settings, setSettings] = useState(() => {
     try {
       const saved = localStorage.getItem('transportCostSettings')
@@ -43,8 +44,9 @@ function App() {
     localStorage.setItem('transportCostSettings', JSON.stringify(newSettings))
   }
 
-  const handleFuelPriceChange = (e) => {
-    const fp = parseFloat(e.target.value) || 0
+  const applyFuelPrice = (val) => {
+    const fp = parseFloat(val)
+    if (isNaN(fp) || fp < 0) return
     const newSettings = {
       ...settings,
       fuelPrice: fp,
@@ -54,7 +56,12 @@ function App() {
     }
     setSettings(newSettings)
     localStorage.setItem('transportCostSettings', JSON.stringify(newSettings))
+    setFuelInput(null) // clear local override, show from settings
   }
+
+  const handleFuelPriceChange = (e) => setFuelInput(e.target.value)
+  const handleFuelPriceBlur  = (e) => applyFuelPrice(e.target.value)
+  const handleFuelPriceKey   = (e) => { if (e.key === 'Enter') e.target.blur() }
 
   return (
     <div className="app">
@@ -73,8 +80,10 @@ function App() {
             <input
               type="number"
               className="fuel-input"
-              value={settings.fuelPrice ?? 36}
+              value={fuelInput ?? settings.fuelPrice ?? 36}
               onChange={handleFuelPriceChange}
+              onBlur={handleFuelPriceBlur}
+              onKeyDown={handleFuelPriceKey}
               step={0.01}
               min={0}
             />
