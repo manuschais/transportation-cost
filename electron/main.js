@@ -1,6 +1,8 @@
-import { app, BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { fileURLToPath } from 'url'
+import { writeFileSync, unlinkSync } from 'fs'
+import { tmpdir } from 'os'
 
 const __dirname = join(fileURLToPath(import.meta.url), '..')
 
@@ -14,6 +16,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      preload: join(__dirname, '../preload/preload.js'),
     },
     backgroundColor: '#1a2035',
     show: false,
@@ -29,6 +32,34 @@ function createWindow() {
     return { action: 'deny' }
   })
 }
+
+// ─── PDF Export via IPC ───────────────────────────────────────────────────
+ipcMain.handle('export-pdf', async (_event, html, options = {}) => {
+  const tmpFile = join(tmpdir(), `tc_print_${Date.now()}.html`)
+  try {
+    writeFileSync(tmpFile, html, 'utf-8')
+    const pdfWin = new BrowserWindow({ show: false, webPreferences: { nodeIntegration: false } })
+    await pdfWin.loadFile(tmpFile)
+    const pdf = await pdfWin.webContents.printToPDF({
+      pageSize:  options.pageSize  || 'A4',
+      landscape: options.landscape ?? false,
+      printBackground: true,
+    })
+    pdfWin.close()
+
+    const { filePath } = await dialog.showSaveDialog({
+      defaultPath: `report_${new Date().toISOString().slice(0, 10)}.pdf`,
+      filters: [{ name: 'PDF Files', extensions: ['pdf'] }],
+    })
+    if (filePath) {
+      writeFileSync(filePath, pdf)
+      return { success: true }
+    }
+    return { success: false }
+  } finally {
+    try { unlinkSync(tmpFile) } catch {}
+  }
+})
 
 app.whenReady().then(() => {
   createWindow()

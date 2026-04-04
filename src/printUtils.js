@@ -6,7 +6,7 @@ function fmtN(n, d=0) {
   return Number(n).toLocaleString('th-TH', { minimumFractionDigits: d, maximumFractionDigits: d })
 }
 
-function printWindow(html, css) {
+function printWindow(html, css, options = {}) {
   const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8">
     <style>
       * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -15,16 +15,19 @@ function printWindow(html, css) {
     </style>
   </head><body>${html}</body></html>`
 
+  // Electron: ส่งออกเป็น PDF ผ่าน IPC
+  if (window.electronAPI?.exportPDF) {
+    window.electronAPI.exportPDF(fullHtml, options)
+    return
+  }
+
+  // Browser: เปิด window ใหม่แล้ว print
   const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' })
   const url  = URL.createObjectURL(blob)
   const w    = window.open(url, '_blank')
   if (w) {
     w.onload = () => {
-      setTimeout(() => {
-        w.focus()
-        w.print()
-        URL.revokeObjectURL(url)
-      }, 300)
+      setTimeout(() => { w.focus(); w.print(); URL.revokeObjectURL(url) }, 300)
     }
   }
 }
@@ -98,7 +101,7 @@ export function printReportTable(customers) {
     tbody tr:nth-child(even) { background: #f8faff; }
   `
 
-  printWindow(html, css)
+  printWindow(html, css, { pageSize: 'A4', landscape: true })
 }
 
 // ─── A5 Portrait: รายละเอียดลูกค้า 1 ราย ─────────────────────────────────
@@ -181,5 +184,5 @@ export function printCustomerDetail(c) {
     .remarks span { font-weight: bold; }
   `
 
-  printWindow(html, css)
+  printWindow(html, css, { pageSize: 'A5', landscape: false })
 }
