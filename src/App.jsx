@@ -59,7 +59,14 @@ function App() {
     setFuelInput(null) // clear local override, show from settings
   }
 
-  const handleFuelPriceChange = (e) => setFuelInput(e.target.value)
+  const handleFuelPriceChange = (e) => {
+    const val = e.target.value
+    setFuelInput(val)
+    // apply ทันทีถ้าค่า valid (ไม่ลงท้ายด้วย . หรือ -)
+    if (val !== '' && !val.endsWith('.') && !val.endsWith('-')) {
+      applyFuelPrice(val)
+    }
+  }
   const handleFuelPriceBlur  = (e) => applyFuelPrice(e.target.value)
   const handleFuelPriceKey   = (e) => { if (e.key === 'Enter') e.target.blur() }
 
