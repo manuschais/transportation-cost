@@ -24,7 +24,7 @@ function createWindow() {
   win.setMenuBarVisibility(false)
 
   win.webContents.setWindowOpenHandler(({ url }) => {
-    if (!url || url === 'about:blank') return { action: 'allow' }
+    if (!url || url === 'about:blank' || url.startsWith('blob:')) return { action: 'allow' }
     shell.openExternal(url)
     return { action: 'deny' }
   })
