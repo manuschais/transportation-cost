@@ -1149,3 +1149,70 @@
   /* การ์ดรถ: เรียงเดี่ยว */
   .vehicle-results-grid { grid-template-columns: 1fr !important; }
 }
+
+/* ========== TOAST & CONFIRM ========== */
+.r-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #22d3a0;
+  color: #0a1628;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 8px;
+  z-index: 9999;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.r-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.r-confirm-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 28px;
+  min-width: 280px;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.r-confirm-box p {
+  color: var(--text-1);
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-line;
+  margin-bottom: 20px;
+}
+
+.r-confirm-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.rbtn-confirm-ok {
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+}
+
+.rbtn-confirm-ok:hover { background: #2563eb; }
+
+.rbtn-confirm-cancel {
+  background: var(--bg-subtle);
+  color: var(--text-2);
+  border: 1px solid var(--border);
+}
+
+.rbtn-confirm-cancel:hover { background: var(--bg-hover); }

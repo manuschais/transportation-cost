@@ -25,6 +25,8 @@ export default function CustomerReport({ settings }) {
   const [search, setSearch] = useState('')
   const [expandId, setExpandId] = useState(null)
   const [editingCustomer, setEditingCustomer] = useState(null)
+  const [toast, setToast] = useState(null)
+  const [confirmBox, setConfirmBox] = useState(null) // { msg, onOk }
   const [sortKey, setSortKey] = useState('date')
   const [sortDir, setSortDir] = useState(-1) // -1 = desc (ใหม่สุดก่อน), 1 = asc
 
@@ -50,22 +52,30 @@ export default function CustomerReport({ settings }) {
       return 0
     })
 
+  const showToast = (msg, ms = 2500) => {
+    setToast(msg)
+    setTimeout(() => setToast(null), ms)
+  }
+
+  const showConfirm = (msg, onOk) => setConfirmBox({ msg, onOk })
+
   const handleDelete = (id) => {
-    if (!confirm('ลบข้อมูลลูกค้านี้?')) return
-    deleteCustomer(id)
-    setCustomers(getCustomers())
+    showConfirm('ลบข้อมูลลูกค้านี้?', () => {
+      deleteCustomer(id)
+      setCustomers(getCustomers())
+    })
   }
 
   const handleClearAll = () => {
-    if (!confirm(`ลบข้อมูลลูกค้าทั้งหมด ${customers.length} รายการ?\n\nแนะนำ Backup ก่อนลบ`)) return
-    clearAllCustomers()
-    setCustomers([])
-    setExpandId(null)
+    showConfirm(`ลบข้อมูลลูกค้าทั้งหมด ${customers.length} รายการ?\nแนะนำ Backup ก่อนลบ`, () => {
+      clearAllCustomers()
+      setCustomers([])
+      setExpandId(null)
+    })
   }
 
-  const handleRecalcAll = () => {
-    if (!settings) { alert('ไม่พบข้อมูลการตั้งค่า'); return }
-    if (!confirm(`คำนวนค่าขนส่งใหม่ทั้งหมด ${customers.length} รายการ\nโดยใช้ราคาน้ำมัน ${settings.fuelPrice} บาท/ล. และต้นทุนปัจจุบัน?`)) return
+  const doRecalcAll = () => {
+    if (!settings) return
     const overheadPerTrip = (parseFloat(settings.overheadPerMonth) || 0) /
       (parseFloat(settings.totalFleetTripsPerMonth) || 1)
     customers.forEach(c => {
@@ -88,7 +98,12 @@ export default function CustomerReport({ settings }) {
       updateCustomer(c.id, { fuelPrice: settings.fuelPrice, results: newResults })
     })
     setCustomers(getCustomers())
-    alert(`อัปเดตแล้ว ${customers.length} รายการ`)
+    showToast(`✅ อัปเดตแล้ว ${customers.length} รายการ`)
+  }
+
+  const handleRecalcAll = () => {
+    if (!settings) return
+    showConfirm(`คำนวนใหม่ทั้งหมด ${customers.length} รายการ\nราคาน้ำมัน ${settings.fuelPrice} บาท/ล.`, doRecalcAll)
   }
 
   const handleImport = async (e) => {
@@ -224,6 +239,22 @@ export default function CustomerReport({ settings }) {
           onClose={() => setEditingCustomer(null)}
           onSaved={() => { setCustomers(getCustomers()); setEditingCustomer(null) }}
         />
+      )}
+
+      {/* Toast notification */}
+      {toast && <div className="r-toast">{toast}</div>}
+
+      {/* Confirm dialog */}
+      {confirmBox && (
+        <div className="r-confirm-overlay">
+          <div className="r-confirm-box">
+            <p>{confirmBox.msg}</p>
+            <div className="r-confirm-btns">
+              <button className="rbtn rbtn-confirm-ok" onClick={() => { setConfirmBox(null); confirmBox.onOk() }}>ยืนยัน</button>
+              <button className="rbtn rbtn-confirm-cancel" onClick={() => setConfirmBox(null)}>ยกเลิก</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
